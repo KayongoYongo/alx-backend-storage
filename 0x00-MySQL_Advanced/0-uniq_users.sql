@@ -1,3 +1,4 @@
+-- Creates a table called users
 CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
   email VARCHAR(255) NOT NULL UNIQUE,
