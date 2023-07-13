@@ -1,4 +1,4 @@
---creates a users table
+-- Script to create a table named "users" with specified attributes and requirements
 
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
