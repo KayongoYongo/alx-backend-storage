@@ -1,0 +1,5 @@
+// A script that updates the document school by adding an address attrbute
+db.school.update(
+  { "name": "Holberton school" },
+  { $set: { address: "972 Mission street" } }
+);
