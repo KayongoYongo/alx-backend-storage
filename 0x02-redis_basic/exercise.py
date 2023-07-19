@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Import strings to redis"""
+"""Storing lists"""
 
-import functools
 import redis
-from typing import Union, Optional, Callable
 import uuid
+from typing import Union, Optional, Callable
+import functools
 
 
 class Cache:
@@ -12,16 +12,29 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @staticmethod
+    def get_key(method_name: str, key_type: str) -> str:
+        return f"{method_name}:{key_type}"
+
     @functools.wraps
-    def count_calls(method: Callable) -> Callable:
+    def call_history(method: Callable) -> Callable:
         def wrapper(self, *args, **kwargs):
-            key = method.__qualname__
-            self._redis.incr(key)
-            return method(self, *args, **kwargs)
+            inputs_key = Cache.get_key(method.__qualname__, "inputs")
+            outputs_key = Cache.get_key(method.__qualname__, "outputs")
+
+            # Store input arguments as a string in Redis
+            self._redis.rpush(inputs_key, str(args))
+
+            # Execute the wrapped function to get the output
+            output = method(self, *args, **kwargs)
+
+            # Store the output as a string in Redis
+            self._redis.rpush(outputs_key, str(output))
+
+            return output
         return wrapper
 
-
-    @count_calls
+    @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
         key = str(uuid.uuid4())
         if isinstance(data, (str, bytes)):
