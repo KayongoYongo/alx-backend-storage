@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Implementing an expiring web cache and tracker"""
+
+
 import requests
 import redis
 import time
 
 
 def get_page(url: str) -> str:
-    # Connect to Redis
+    """Implient expiring web cache and tracker"""
     r = redis.Redis()
 
     # Create a key to track the access count for the URL
@@ -32,7 +34,7 @@ def get_page(url: str) -> str:
 
     return ""  # Return an empty string if the request was unsuccessful
 
+
 # Test the get_page function
-url = "http://slowwly.robertomurray.co.uk/delay/5000/url/http://www.example.com"
+url = "http://slowwly.robertomurray.co.uk"
 print(get_page(url))
-print(get_page(url))  # Cached response should be returned this time
